@@ -11,7 +11,9 @@ lazy val root = (project in file(".")).
     libraryDependencies ++= {
       val akkaVersion = "2.4.14"
       val akkaHttpVersion = "10.0.1"
+      val configVersion = "1.3.1"
       Seq(
+        "com.typesafe" % "config" % configVersion,
         "com.typesafe.akka" %% "akka-actor" % akkaVersion,
         "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
         "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion,
