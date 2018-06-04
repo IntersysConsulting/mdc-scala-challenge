@@ -8,5 +8,15 @@ lazy val root = (project in file(".")).
       version      := "0.1.0-SNAPSHOT"
     )),
     name := "mdc-scala-challenge",
-    libraryDependencies += scalaTest % Test
+    libraryDependencies ++= {
+      val akkaVersion = "2.4.14"
+      val akkaHttpVersion = "10.0.1"
+      Seq(
+        "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+        "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
+        "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion,
+        "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion,
+        scalaTest % Test
+      )
+    }
   )
