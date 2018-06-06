@@ -70,7 +70,6 @@ class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with Js
     }
   }
 
-  /**
   "(3) The third problem" should {
     "return a correct answer for size=3" in {
       Get("/problems/3?size=3") ~> Server.route ~> check {
@@ -112,6 +111,7 @@ class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with Js
     }
   }
 
+  /**
   "(4) The fourth problem" should {
     "return a correct answer for a=73, b=19, operation=sum" in  {
       Get("/problems/4?a=73&b=19&operation=sum") ~> Server.route ~> check {
