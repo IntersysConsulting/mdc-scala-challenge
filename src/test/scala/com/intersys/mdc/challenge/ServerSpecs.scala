@@ -5,7 +5,7 @@ import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.{Matchers, WordSpec}
 
 import com.intersys.mdc.challenge.exercises.problems.Example.FibonacciResult
-//import com.intersys.mdc.challenge.exercises.problems.Problem1.MixedString
+import com.intersys.mdc.challenge.exercises.problems.Problem1.MixedString
 //import com.intersys.mdc.challenge.exercises.problems.Problem2.SuperDigit
 //import com.intersys.mdc.challenge.exercises.problems.Problem4.Calculation
 //import com.intersys.mdc.challenge.exercises.problems.Problem5.IntListResult
@@ -29,7 +29,6 @@ class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with Js
     }
   }
 
-  /**
   "(1) The first problem" should {
     "return a correct answer for firstWord=intersys, secondWord=consulting" in {
       Get("/problems/1?firstWord=intersys&secondWord=consulting") ~> Server.route ~> check {
@@ -47,6 +46,7 @@ class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with Js
     }
   }
 
+  /**
   "(2) The second problem" should {
     "return a correct answer for n=148, k=3" in {
       Get("/problems/2?n=148&k=3") ~> Server.route ~> check {
