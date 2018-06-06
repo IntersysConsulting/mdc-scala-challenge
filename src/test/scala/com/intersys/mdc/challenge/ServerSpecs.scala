@@ -8,7 +8,7 @@ import com.intersys.mdc.challenge.exercises.problems.Example.FibonacciResult
 import com.intersys.mdc.challenge.exercises.problems.Problem1.MixedString
 import com.intersys.mdc.challenge.exercises.problems.Problem2.SuperDigit
 import com.intersys.mdc.challenge.exercises.problems.Problem4.Calculation
-//import com.intersys.mdc.challenge.exercises.problems.Problem5.IntListResult
+import com.intersys.mdc.challenge.exercises.problems.Problem5.IntListResult
 
 class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with JsonSupport {
 
@@ -137,7 +137,6 @@ class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with Js
     }
   }
 
-  /**
   "(5) The fifth problem" should {
     "return a correct answer for a=10, b=7, c=32" in {
       Get("/problems/5?a=10&b=7&c=32") ~> Server.route ~> check {
@@ -154,5 +153,5 @@ class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with Js
       }
     }
   }
-    **/
+
 }

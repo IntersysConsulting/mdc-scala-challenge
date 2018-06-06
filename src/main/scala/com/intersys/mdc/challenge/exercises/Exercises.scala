@@ -10,7 +10,7 @@ case object Exercises {
     Problem1.solution ~
     Problem2.solution ~
     Problem3.solution ~
-    Problem4.solution //~
-    //Problem5.solution
+    Problem4.solution ~
+    Problem5.solution
   }
 }
