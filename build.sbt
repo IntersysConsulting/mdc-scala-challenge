@@ -9,8 +9,8 @@ lazy val root = (project in file(".")).
     )),
     name := "mdc-scala-challenge",
     libraryDependencies ++= {
-      val akkaVersion = "2.4.14"
-      val akkaHttpVersion = "10.0.1"
+      val akkaVersion = "2.5.12"
+      val akkaHttpVersion = "10.1.1"
       val configVersion = "1.3.1"
       Seq(
         "com.typesafe" % "config" % configVersion,
