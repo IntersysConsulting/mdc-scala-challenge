@@ -11,6 +11,7 @@ case object Exercises {
     Problem2.solution ~
     Problem3.solution ~
     Problem4.solution ~
-    Problem5.solution
+    Problem5.solution ~
+    Problem6.solution
   }
 }

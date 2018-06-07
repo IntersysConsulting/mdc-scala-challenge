@@ -7,6 +7,7 @@ import com.intersys.mdc.challenge.exercises.problems.Problem1.MixedString
 import com.intersys.mdc.challenge.exercises.problems.Problem2.SuperDigit
 import com.intersys.mdc.challenge.exercises.problems.Problem4.Calculation
 import com.intersys.mdc.challenge.exercises.problems.Problem5.IntListResult
+import com.intersys.mdc.challenge.exercises.problems.Problem6.{InterpolationFailure, InterpolationSuccess}
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val jsonFormatFibonacciResults = jsonFormat1(FibonacciResult)
@@ -14,4 +15,6 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val jsonFormatSuperDigit = jsonFormat3(SuperDigit)
   implicit val jsonFormatCalculation = jsonFormat4(Calculation)
   implicit val jsonFormatIntListResult = jsonFormat4(IntListResult)
+  implicit val jsonFormatInterpolateSuccess = jsonFormat2(InterpolationSuccess)
+  implicit val jsonFormatInterpolateFailure = jsonFormat3(InterpolationFailure)
 }
