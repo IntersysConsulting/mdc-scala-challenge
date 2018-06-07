@@ -3,12 +3,12 @@ package com.intersys.mdc.challenge
 import com.intersys.mdc.challenge.exercises.problems.JsonSupport
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.{Matchers, WordSpec}
-
 import com.intersys.mdc.challenge.exercises.problems.Example.FibonacciResult
 import com.intersys.mdc.challenge.exercises.problems.Problem1.MixedString
 import com.intersys.mdc.challenge.exercises.problems.Problem2.SuperDigit
 import com.intersys.mdc.challenge.exercises.problems.Problem4.Calculation
 import com.intersys.mdc.challenge.exercises.problems.Problem5.IntListResult
+import com.intersys.mdc.challenge.exercises.problems.Problem6.{InterpolationFailure, InterpolationSuccess}
 
 class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with JsonSupport {
 
@@ -150,6 +150,40 @@ class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with Js
         val response = responseAs[String]
         val intListResult = IntListResult(3, 580, 134222004, "578 -> 679 -> 342 -> ")
         response shouldBe intListResult.toJson.toString
+      }
+    }
+  }
+
+  "(6) The sixth problem" should {
+    "return a correct answer for f(x)=5x+7" in {
+      Get("/problems/6?seriesName=f(x)=5x%2B7&dataList=32&dataList=missing_27&dataList=22&dataList=17&dataList=missing_12&dataList=7") ~> Server.route ~> check {
+        val response = responseAs[String]
+        val interpolationSuccess = InterpolationSuccess("f(x)=5x+7", Vector(7.0, 12.0, 17.0, 22.0, 27.0, 32.0))
+        response shouldBe interpolationSuccess.toJson.toString
+      }
+    }
+
+    "return a correct answer for a custom dataset" in {
+      Get("/problems/6?seriesName=custom&dataList=1&dataList=0&dataList=-1&dataList=missing_0&dataList=1&dataList=0") ~> Server.route ~> check {
+        val response = responseAs[String]
+        val interpolationSuccess = InterpolationSuccess("custom", Vector(0.0, 1.0, 0.0, -1.0, 0.0, 1.0))
+        response shouldBe interpolationSuccess.toJson.toString
+      }
+    }
+
+    "return a correct answer for an invalid interpolation using a custom dataset" in {
+      Get("/problems/6?seriesName=custom&dataList=1&dataList=0&dataList=missing_-1&dataList=missing_0&dataList=1&dataList=0") ~> Server.route ~> check {
+        val response = responseAs[String]
+        val interpolationFailure = InterpolationFailure("custom", Vector("0", "1", "missing_0", "missing_-1", "0", "1"), "Failed to perform interpolation operation.")
+        response shouldBe interpolationFailure.toJson.toString
+      }
+    }
+
+    "return a correct answer for an invalid interpolation using linear function" in {
+      Get("/problems/6?seriesName=linear&dataList=missing_1&dataList=0") ~> Server.route ~> check {
+        val response = responseAs[String]
+        val interpolationFailure = InterpolationFailure("linear", Vector("0", "missing_1"), "At least 3 elements are needed to perform the operation.")
+        response shouldBe interpolationFailure.toJson.toString
       }
     }
   }
