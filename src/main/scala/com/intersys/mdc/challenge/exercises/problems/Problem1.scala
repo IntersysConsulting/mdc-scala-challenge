@@ -32,8 +32,8 @@ case object Problem1 extends Problem {
     *   - For more information about case classes see: <https://docs.scala-lang.org/tour/case-classes.html>
     *
     * Example:
-    * Get request: /problems/1?firstWord=intersys&secondWord=consulting
-    * Response: {"first":"abcdef","123456":"consulting","mixed":"a1b2c3d4e5f6"}
+    * Get request: /problems/1?firstWord=abcdef&secondWord=1234
+    * Response: {"first":"abcdef","second":"1234","mixed":"a1b2c3d4ef"}
     */
 
   val solution: Route = path("1") {
