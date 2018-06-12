@@ -79,8 +79,32 @@ case object Problem6 extends Problem {
   case class InterpolationFailure(seriesName: String, data: Seq[String], reason: String)
 
   // <---- Your code starts here. ---> (optional)
+  case class Pair(x: Int, y: Double) {
+    def interpolate(other: Pair)(x: Int): Pair = {
+      val m = (other.y - this.y) / (other.x - this.x)
+      val b = this.y - m * this.x
+      val y = b + m * x
+      Pair(x, y)
+    }
+  }
 
+  implicit class StringOps(val string: String) {
+    def toOptDouble: Option[Double] = scala.util.Try(string.toDouble).toOption
+    def toOptDoubleWithInterpolation(i: Int, data: Vector[String]): Option[Double] = string.toOptDouble match {
+      case Some(double) => Some(double)
+      case None         => for {
+        prevY      <- data.lift(i-1).flatMap(_.toOptDouble)
+        followingY <- data.lift(i+1).flatMap(_.toOptDouble)
+      } yield  Pair(i-1, prevY).interpolate(Pair(i+1, followingY))(i).y
+    }
+  }
 
+  implicit class VectorOps(val vector: Vector[String]) {
+    def interpolate: Option[Vector[Double]] = {
+      val vecOpt: Vector[Option[Double]] = vector.zipWithIndex map { case (y, x) => y.toOptDoubleWithInterpolation(x, vector)}
+      vecOpt.foldLeft(Option(Vector[Double]())) {(acc, element) => element.flatMap(z => acc.map(vec => vec :+ z))}
+    }
+  }
   // <---- Your code ends here. ---> (optional)
 
   val solution: Route = path("6") {
@@ -88,14 +112,23 @@ case object Problem6 extends Problem {
       parameters('seriesName, 'dataList.*) {
         (seriesName, dataList) =>  {
           // <---- Your code starts here. --->
-          ???
+          val data = dataList.toVector
+          val atLeastThreeElements = "At least 3 elements are needed to perform the operation."
+          val failedToPerformOps   = "Failed to perform interpolation operation."
+          val challengeResponse: Either[InterpolationFailure, InterpolationSuccess] = data.length match {
+            case invalid if invalid < 3 => Left(InterpolationFailure(seriesName, data, atLeastThreeElements))
+            case _ => data.interpolate match {
+              case None => Left(InterpolationFailure(seriesName, data, failedToPerformOps))
+              case Some(result) => Right(InterpolationSuccess(seriesName, result))
+            }
+          }
           // <---- Your code ends  here. ---->
 
           // Uncomment this code segment when your solution is ready.
-          /**challengeResponse match {
+          challengeResponse match {
             case Right(success) => complete(success)
             case Left(failure)  => complete(failure)
-          }**/
+          }
         }
       }
     }

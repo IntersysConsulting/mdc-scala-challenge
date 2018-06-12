@@ -27,7 +27,21 @@ case object Problem3 extends Problem {
 
   val solution: Route = path("3") {
     // <---- Your code starts here. --->
-    ???
+    get {
+      parameters('size.as[Int]) {
+        size => {
+          def pascalTriangle(size: Int, line: Int = 0): String = {
+            def elem(i: Int, j: Int): Int =
+              if (j >= i || j == 0) 1 else elem(i-1, j-1) + elem(i-1, j)
+            val stringLine = (0 to line) map {elem(line, _)} mkString " "
+            if (line < size) stringLine + "<br>" + pascalTriangle(size, line+1)
+            else stringLine
+          }
+          val challengeResponse: String = pascalTriangle(size)
+          htmlResponse(challengeResponse)
+        }
+      }
+    }
     // <---- Your code ends  here. ---->
   }
 
