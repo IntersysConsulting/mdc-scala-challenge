@@ -33,7 +33,7 @@ case object Problem5 extends Problem {
     *
     * Examples:
     * Get Request: /problems/5?a=5&b=6&c=2
-    * Response: {"len":3,"sum":7,"mult":60,"str":"5 -> 6 -> 2 -> "}
+    * Response: {"len":3,"sum":13,"mult":60,"str":"5 -> 6 -> 2 -> "}
     */
 
   case class IntListResult(len: Int, sum: Int, mult: Int, str: String)
