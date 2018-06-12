@@ -47,10 +47,10 @@ case object Problem5 extends Problem {
     }
 
     // A) Implement the length method
-
+    def length: Int = ???
 
     // B) Implement the sum method
-
+    def sum: Int = ???
 
     // C) Implement a generalization of the above methods and call it fold.
     // def fold(end: Int, f: ???): Int = ???

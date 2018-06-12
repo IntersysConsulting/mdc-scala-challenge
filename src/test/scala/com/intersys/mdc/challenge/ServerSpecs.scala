@@ -7,7 +7,7 @@ import com.intersys.mdc.challenge.exercises.problems.Example.FibonacciResult
 import com.intersys.mdc.challenge.exercises.problems.Problem1.MixedString
 import com.intersys.mdc.challenge.exercises.problems.Problem2.SuperDigit
 import com.intersys.mdc.challenge.exercises.problems.Problem4.Calculation
-import com.intersys.mdc.challenge.exercises.problems.Problem5.IntListResult
+import com.intersys.mdc.challenge.exercises.problems.Problem5.{IntListResult, Item, Final}
 import com.intersys.mdc.challenge.exercises.problems.Problem6.{InterpolationFailure, InterpolationSuccess}
 
 class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with JsonSupport {
@@ -141,16 +141,25 @@ class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with Js
     "return a correct answer for a=10, b=7, c=32" in {
       Get("/problems/5?a=10&b=7&c=32") ~> Server.route ~> check {
         val response = responseAs[String]
-        val intListResult = IntListResult(3, 12, 2240, "10 -> 7 -> 32 -> ")
+        val intListResult = IntListResult(3, 49, 2240, "10 -> 7 -> 32 -> ")
         response shouldBe intListResult.toJson.toString
       }
     }
     "return a correct answer for a=578, b=679, c=342" in {
       Get("/problems/5?a=578&b=679&c=342") ~> Server.route ~> check {
         val response = responseAs[String]
-        val intListResult = IntListResult(3, 580, 134222004, "578 -> 679 -> 342 -> ")
+        val intListResult = IntListResult(3, 1599, 134222004, "578 -> 679 -> 342 -> ")
         response shouldBe intListResult.toJson.toString
       }
+    }
+    "contain a correct implementation of IntList methods (length and sum)" in {
+      val firstIntList = Item(1, Item(1, Item(1, Item(1, Final))))
+      firstIntList.length shouldBe 4
+      firstIntList.sum    shouldBe 4
+
+      val secondIntList = Item(12, Item(5781, Item(0, Item(87, Item(7319458, Item(3785, Item(8, Final)))))))
+      secondIntList.length shouldBe 7
+      secondIntList.sum    shouldBe 7329131
     }
   }
 
