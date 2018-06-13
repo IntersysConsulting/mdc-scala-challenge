@@ -3,6 +3,7 @@ package com.intersys.mdc.challenge.exercises.problems
 import akka.http.scaladsl.server.Route
 
 import scala.util.{Left, Right}
+import scala.util.Try
 
 case object Problem6 extends Problem {
 
@@ -78,24 +79,49 @@ case object Problem6 extends Problem {
   case class InterpolationSuccess(seriesName: String, result: Seq[Double])
   case class InterpolationFailure(seriesName: String, data: Seq[String], reason: String)
 
-  // <---- Your code starts here. ---> (optional)
-
-
-  // <---- Your code ends here. ---> (optional)
-
   val solution: Route = path("6") {
     get {
       parameters('seriesName, 'dataList.*) {
         (seriesName, dataList) =>  {
-          // <---- Your code starts here. --->
-          ???
-          // <---- Your code ends  here. ---->
+          implicit class StringOps(str: String) {
+            def asDouble: Option[Double] = Try(Some(str.toDouble)) getOrElse None
+          }
 
-          // Uncomment this code segment when your solution is ready.
-          /**challengeResponse match {
+          /* For each triplet return the second value interpolated only when it contains
+           * the word 'missing' and the first and third values are numbers. Otherwise,
+           * the same value will be returned */
+          def interpolate(v1: String, v2: String, v3: String): String = (v1.asDouble, v2, v3.asDouble) match {
+            case (Some(v1), v2, Some(v3)) if v2 contains "missing" => ((v1 + v3) / 2f).toString
+            case _ => v2
+          }
+
+          /* Error messages */
+          val errFewArgs = "At least 3 elements are needed to perform the operation."
+          val errFailedInterpol = "Failed to perform interpolation operation."
+
+          val vectorData = dataList.toVector
+
+          /* Verify that the vector has at least 3 elements. If so, interpolate the missing values */
+          val result = vectorData.size match {
+            case x if x < 3 => Left(errFewArgs)
+            case _ => Right(vectorData.sliding(3).toSeq.map {case Seq(v1, v2, v3) => interpolate(v1, v2, v3)})
+          }
+
+          /* If the result contains 'missing's, return an error. Otherwise, the transformed
+           * data, with the first and last value from the original dataset, is concatenated */
+          val challengeResponse = result match {
+            case Right(result) => if (result.exists(_.contains("missing")))
+                                    Left(InterpolationFailure(seriesName, vectorData, errFailedInterpol))
+                                  else
+                                    Right(InterpolationSuccess(seriesName,
+                                                               (Seq(vectorData.head) ++ result ++ Seq(vectorData.last)).flatMap(_.asDouble)))
+            case Left(error) => Left(InterpolationFailure(seriesName, vectorData, error))
+          }
+
+          challengeResponse match {
             case Right(success) => complete(success)
             case Left(failure)  => complete(failure)
-          }**/
+          }
         }
       }
     }

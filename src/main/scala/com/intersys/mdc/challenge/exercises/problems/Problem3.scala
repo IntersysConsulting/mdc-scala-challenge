@@ -1,11 +1,12 @@
 package com.intersys.mdc.challenge.exercises.problems
 
 import akka.http.scaladsl.server.Route
+import scala.annotation.tailrec
 
 case object Problem3 extends Problem {
 
-  /**
-    * Recursive Pascal Triangle
+  
+    /* Recursive Pascal Triangle
     * Description:
     * There are many ways of implementing a pascal triangle. In this particular exercise, the goal is to provide a
     * recursive implementation. You need to research the nature of the pascal triangle in
@@ -25,10 +26,28 @@ case object Problem3 extends Problem {
     * Response: 1<br>1 1<br>1 2 1<br>1 3 3 1
     */
 
+  def getPascalTriangle(size: Long): String = getPascalTriangleAcc(size, Seq[Long](), "")
+
+  @tailrec
+  private def getPascalTriangleAcc(left: Long, prev: Seq[Long], acc: String): String = {
+    val curr: Seq[Long] = prev.size match {
+      case 0 => Seq(1L)
+      case 1 => Seq(1L, 1L)
+      case _ => Seq(1L) ++ prev.sliding(2).toList.map {case Seq(n1, n2) => n1 + n2} ++ Seq(1L)
+    }
+    val accString = acc + curr.mkString(" ")
+
+    left match {
+      case 0 => ""
+      case 1 => accString
+      case _ => getPascalTriangleAcc(left - 1, curr, accString + "<br>")
+    }
+  }
+
   val solution: Route = path("3") {
-    // <---- Your code starts here. --->
-    ???
-    // <---- Your code ends  here. ---->
+    get {
+      parameters('size.as[Long]) { size => htmlResponse(getPascalTriangle(size + 1)) }
+    }
   }
 
 }

@@ -41,9 +41,10 @@ case object Problem1 extends Problem {
       parameters('firstWord.as[String], 'secondWord.as[String]) {
         (first, second) => {
           val challengeSolution: MixedString = {
-            // <---- Your code starts here. --->
-            ???
-            // <---- Your code ends  here. ---->
+            MixedString(first, second,
+                        first.zipAll(second, "", null).flatMap {
+                          t => List(t._1.toString, t._2.toString)
+                        }.mkString)
           }
           complete(challengeSolution)
         }

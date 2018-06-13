@@ -1,6 +1,7 @@
 package com.intersys.mdc.challenge.exercises.problems
 
 import akka.http.scaladsl.server.Route
+import scala.util.Try
 
 case object Problem4 extends Problem {
 
@@ -51,21 +52,35 @@ case object Problem4 extends Problem {
     get {
       parameterMap {
         params => {
-          // <---- Your code starts here. --->
+          implicit class StringOps(str: String) {
+            def asInt: Option[Int] = Try(Some(str.toInt)) getOrElse None
+          }
 
-          // A) Implicit class here with:
-          // def asInt: Option[Int] = ???
-          ???
+          def calculate(ops: String, a: Int, b: Int): Option[Int] = {
+            ops match {
+              case "sum" => Some(a + b)
+              case "substraction" => Some(a - b)
+              case "multiplication" => Some(a * b)
+              case "division" => Try(Some(a / b)) getOrElse None
+              case _ => None
+            }
+          }
 
-          // B) Implement the calculate method.
-          // def calculate(ops: String, a: Int, b: Int): Option[Int] = ???
-          def calculate(ops: String, a: Int, b: Int): Option[Int] = ???
+          val challengeResponse: Option[Calculation] = {
+            val a: Option[Int] = params.get("a").flatMap(_.asInt)
+            val b: Option[Int] = params.get("b").flatMap(_.asInt)
+            val op = params.getOrElse("operation", "")
 
-          // C) Complete the challenge response variable.
-          // val challengeResponse: Option[Calculation] = ???
-          val challengeResponse: Option[Calculation] = ???
+            (a, b) match {
+              case (Some(a), Some(b)) =>
+                calculate(op, a, b) match {
+                  case Some(r) => Some(Calculation(op, a, b, r))
+                  case _ => None
+                }
+              case _ => None
+            }
+          }
 
-          // <---- Your code ends  here. ---->
           challengeResponse match {
             case None => badRequestResponse
             case Some(calc) => complete(calc)

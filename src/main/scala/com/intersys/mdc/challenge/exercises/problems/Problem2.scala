@@ -1,6 +1,7 @@
 package com.intersys.mdc.challenge.exercises.problems
 
 import akka.http.scaladsl.server.Route
+import scala.annotation.tailrec
 
 case object Problem2 extends Problem {
 
@@ -27,12 +28,21 @@ case object Problem2 extends Problem {
 
   case class SuperDigit(n: Long, k: Long, value: Long)
 
-  val solution: Route = path("2") {
-    get {
-      // <---- Your code starts here. --->
-      ???
-      // <---- Your code ends  here. ---->
-    }
+  def getSuperDigit(str: String): Long = getSuperDigitAcc(str, 0)
+
+  @tailrec
+  private def getSuperDigitAcc(str: String, acc: Long): Long = {
+    val sum = str.map(_.asDigit).sum
+    if (str.size > 1) getSuperDigitAcc(sum.toString, acc + sum) else str.toLong 
   }
 
+  val solution: Route = path("2") {
+    get {
+      parameters('n.as[Long], 'k.as[Long]) { (n, k) =>
+        /* Instead of repeating the array, we get the result from n to string and multiply by k and proceed */
+        val superDigit = SuperDigit(n, k, getSuperDigit((n.toString.map(_.asDigit).sum * k).toString))
+        complete(superDigit)
+      }
+    }
+  }
 }
