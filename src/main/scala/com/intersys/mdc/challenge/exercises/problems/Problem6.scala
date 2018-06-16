@@ -3,6 +3,7 @@ package com.intersys.mdc.challenge.exercises.problems
 import akka.http.scaladsl.server.Route
 
 import scala.util.{Left, Right, Try}
+import scalaz._, Scalaz._
 
 case object Problem6 extends Problem {
 
@@ -24,8 +25,8 @@ case object Problem6 extends Problem {
     *     - A successful interpolation involves the correct interpolation of all missing values of the vector.
     *     - Infer further usage by the type signatures in the code.
     *     - A missing value can be interpolated only if the surrounding elements are doubles
-    *       (e.g. Vector("1", "missing", "2", "missing", "5") can be interpolated
-    *       while Vector("1", "missing", "missing", "4", "5") cannot).
+    * (e.g. Vector("1", "missing", "2", "missing", "5") can be interpolated
+    * while Vector("1", "missing", "missing", "4", "5") cannot).
     *   - Use the InterpolationFailure case class to represent a failed interpolation.
     *     - You must provide a reason (string) for using this case class.
     *     - Use the string "At least 3 elements are needed to perform the operation." when the vector has less than 3 elements.
@@ -62,20 +63,21 @@ case object Problem6 extends Problem {
     * Response: {"seriesName":"f(x)=x","data":["missing","1","2","3","4"],"reason":"Failed to perform interpolation operation."}
     * - Notes:
     *   - This example returns an InterpolationFailure because the missing value is not surrounded by two "double" values
-    *   to interpolate from (the technique used to estimate a value outside the domain of the datapoints available is called
-    *   extrapolation or forecasting).
+    * to interpolate from (the technique used to estimate a value outside the domain of the datapoints available is called
+    * extrapolation or forecasting).
     *
     * Get Request: /problems/6?seriesName=f(x)=x&dataList=1&dataList=0
     * Response: {"seriesName":"f(x)=x","data":["0","1"],"reason":"At least 3 elements are needed to perform the operation."}
     * - Notes:
     *   - This example returns an InterpolationFailure because a vector of datapoints with length less or equal than 2
-    *   does not contains enough information to perform a interpolation for any of its elements.
+    * does not contains enough information to perform a interpolation for any of its elements.
     *   - Note that a vector of size 3 contains enough datapoints to perform an interpolation for the value in the
-    *   index 1 (second position).
+    * index 1 (second position).
     */
 
 
   case class InterpolationSuccess(seriesName: String, result: Seq[Double])
+
   case class InterpolationFailure(seriesName: String, data: Seq[String], reason: String)
 
   // <---- Your code starts here. ---> (optional)
@@ -84,28 +86,51 @@ case object Problem6 extends Problem {
     def asDouble: Option[Double] = Try(s.toDouble).toOption
   }
 
-  def
+  val AtLeast3ErrorMsg       = "At least 3 elements are needed to perform the operation."
+  val FailedInterpolationMsg = "Failed to perform interpolation operation."
+
+  def interpolate(y0: Double, y1: Double): Double = y0 + (y1 - y0) / 2
 
   // <---- Your code ends here. ---> (optional)
 
   val solution: Route = path("6") {
     get {
       parameters('seriesName, 'dataList.*) {
-        (seriesName, dataList) =>  {
+        (seriesName, dataList) => {
           // <---- Your code starts here. --->
-          val v = dataList.iterator.map(_.asDouble)
-          val data = v.sliding(3).toVector.zipWithIndex
-          val canBeInterpolated: Boolean =
-            data.forall{ case List(Some(a), _, Some(c)) -> x => true }
+          val data = dataList.toVector
+          val n = data.length
+          val optionalDoubles: Vector[Option[Double]] = data.map(_.asDouble)
+          val missingIndices: Vector[Int] =
+            optionalDoubles.zipWithIndex.collect { case (None, i) => i }
 
+          val res: Either[String, Vector[Double]] =
+            if (n <= 3) {
+              Left(AtLeast3ErrorMsg)
+            } else if (missingIndices.contains(0) ||
+                       missingIndices.contains(n - 1) ||
+                       optionalDoubles.slice(1, n - 1).sliding(2).exists { case Vector(None, None) => true; case _ => false }) {
+              Left(FailedInterpolationMsg)
+            } else {
+              val dArray = optionalDoubles.toArray
+              missingIndices.foreach { i =>
+                dArray(i) = for {
+                  y0 <- dArray(i - 1)
+                  y1 <- dArray(i + 1)
+                } yield interpolate(y0, y1)
+              }
 
-          // <---- Your code ends  here. ---->
+              dArray.toList.sequence match {
+                case Some(ds) => Right(ds.toVector)
+                case None     => Left(FailedInterpolationMsg)
+              }
+            }
 
-          // Uncomment this code segment when your solution is ready.
-          /**challengeResponse match {
-            case Right(success) => complete(success)
-            case Left(failure)  => complete(failure)
-          }**/
+          res match {
+            case Right(vs)      => complete(InterpolationSuccess(seriesName, vs))
+            case Left(errorMsg) => complete(InterpolationFailure(seriesName, data, errorMsg))
+          }
+          // <---- Your code ends here. --->
         }
       }
     }
