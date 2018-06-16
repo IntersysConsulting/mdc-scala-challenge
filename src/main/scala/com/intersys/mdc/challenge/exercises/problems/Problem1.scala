@@ -2,15 +2,28 @@ package com.intersys.mdc.challenge.exercises.problems
 
 import akka.http.scaladsl.server.Route
 
+import scala.annotation.tailrec
+
 case object Problem1 extends Problem {
 
+  implicit class ListExtraOps[A](as: List[A]) {
+    def interleave(that: List[A]): List[A] = {
+      @tailrec def loop(xs: List[A], ys: List[A], acc: List[A]): List[A] = xs match {
+        case h :: t =>
+          loop(ys, t, h :: acc)
+        case Nil      =>
+          acc reverse_::: ys
+      }
+      loop(as, that, List.empty[A])
+    }
+  }
 
-  implicit class StringOps(string: String) {
-    def getStr(i: Int): String = scala.util.Try(string.charAt(i).toString).toOption.getOrElse("")
+  implicit class StringExtraOps(s: String) {
+    def interleave(that: String): String =
+      StringBuilder.newBuilder.appendAll(s.toList interleave that.toList).result
   }
 
   final case class MixedString(first: String, second: String, mixed: String)
-
 
   /**
     * Mixing Strings
@@ -39,14 +52,9 @@ case object Problem1 extends Problem {
   val solution: Route = path("1") {
     get {
       parameters('firstWord.as[String], 'secondWord.as[String]) {
-        (first, second) => {
-          val challengeSolution: MixedString = {
-            // <---- Your code starts here. --->
-            ???
-            // <---- Your code ends  here. ---->
-          }
-          complete(challengeSolution)
-        }
+        (first, second) =>
+          val mixed = first interleave second
+          complete(MixedString(first, second, mixed))
       }
     }
   }

@@ -2,6 +2,8 @@ package com.intersys.mdc.challenge.exercises.problems
 
 import akka.http.scaladsl.server.Route
 
+import scala.annotation.tailrec
+
 case object Problem2 extends Problem {
 
   /**
@@ -27,10 +29,28 @@ case object Problem2 extends Problem {
 
   case class SuperDigit(n: Long, k: Long, value: Long)
 
+  implicit class LongExtraOps(d: Long) {
+    def digits: Array[Int] = d.toString.toCharArray.map(_ - 48)
+    def digitsSum: Long = digits.sum
+
+    def superDigit: Long = {
+      @tailrec
+      def loop(m: Long): Long = {
+        val sum = m.digitsSum
+        if (sum <= 9) sum else loop(sum)
+      }
+      loop(d)
+    }
+  }
+
   val solution: Route = path("2") {
     get {
       // <---- Your code starts here. --->
-      ???
+      parameters('n.as[Long], 'k.as[Long]) {
+        (n, k) =>
+          val sd = (n.superDigit * k).superDigit
+          complete(SuperDigit(n, k, sd))
+      }
       // <---- Your code ends  here. ---->
     }
   }

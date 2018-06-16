@@ -2,6 +2,8 @@ package com.intersys.mdc.challenge.exercises.problems
 
 import akka.http.scaladsl.server.Route
 
+import scala.collection.mutable.ArrayBuilder
+
 case object Problem3 extends Problem {
 
   /**
@@ -25,9 +27,29 @@ case object Problem3 extends Problem {
     * Response: 1<br>1 1<br>1 2 1<br>1 3 3 1
     */
 
+  def pascal(c: Int, r: Int): Int = {
+    if (c == 0 || c == r) 1
+    else pascal(c - 1, r - 1) + pascal(c, r - 1)
+  }
+
+  def pascalTriangle(size: Int): String = {
+    var outer = new ArrayBuilder.ofRef[Array[Int]]
+    for (row <- 0 to size) {
+      val inner = new ArrayBuilder.ofInt
+      for (col <- 0 to row)
+        inner += pascal(col, row)
+      outer += inner.result
+    }
+    outer.result.map(_.mkString("", " ", "")).mkString("", "<br>", "")
+  }
+
   val solution: Route = path("3") {
     // <---- Your code starts here. --->
-    ???
+    get {
+      parameters('size.as[Int]) {
+        size => complete(pascalTriangle(size))
+      }
+    }
     // <---- Your code ends  here. ---->
   }
 

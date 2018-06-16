@@ -2,7 +2,7 @@ package com.intersys.mdc.challenge.exercises.problems
 
 import akka.http.scaladsl.server.Route
 
-import scala.util.{Left, Right}
+import scala.util.{Left, Right, Try}
 
 case object Problem6 extends Problem {
 
@@ -80,6 +80,11 @@ case object Problem6 extends Problem {
 
   // <---- Your code starts here. ---> (optional)
 
+  implicit class StringExtraOps(s: String) {
+    def asDouble: Option[Double] = Try(s.toDouble).toOption
+  }
+
+  def
 
   // <---- Your code ends here. ---> (optional)
 
@@ -88,7 +93,12 @@ case object Problem6 extends Problem {
       parameters('seriesName, 'dataList.*) {
         (seriesName, dataList) =>  {
           // <---- Your code starts here. --->
-          ???
+          val v = dataList.iterator.map(_.asDouble)
+          val data = v.sliding(3).toVector.zipWithIndex
+          val canBeInterpolated: Boolean =
+            data.forall{ case List(Some(a), _, Some(c)) -> x => true }
+
+
           // <---- Your code ends  here. ---->
 
           // Uncomment this code segment when your solution is ready.

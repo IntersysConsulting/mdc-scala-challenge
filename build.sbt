@@ -1,5 +1,3 @@
-import Dependencies._
-
 lazy val root = (project in file(".")).
   settings(
     inThisBuild(List(
@@ -12,6 +10,7 @@ lazy val root = (project in file(".")).
       val akkaVersion = "2.5.12"
       val akkaHttpVersion = "10.1.1"
       val configVersion = "1.3.1"
+      val scalazVersion = "7.2.24"
       Seq(
         "com.typesafe" % "config" % configVersion,
         "com.typesafe.akka" %% "akka-actor" % akkaVersion,
@@ -19,7 +18,8 @@ lazy val root = (project in file(".")).
         "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion,
         "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion,
         "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
-        scalaTest % Test
-      )
+        "org.scalaz"        %% "scalaz-core" % scalazVersion,
+        "org.scalatest" %% "scalatest" % "3.0.5" % Test
+      ).map(_ withJavadoc())
     }
   )

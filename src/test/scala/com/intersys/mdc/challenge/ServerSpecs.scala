@@ -11,7 +11,7 @@ import com.intersys.mdc.challenge.exercises.problems.Problem5.{IntListResult, It
 import com.intersys.mdc.challenge.exercises.problems.Problem6.{InterpolationFailure, InterpolationSuccess}
 
 class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with JsonSupport {
-
+  /*
   "(0) The example problem" should {
     "return a correct answer for size=5" in {
       Get("/problems/example?size=5") ~> Server.route ~> check {
@@ -84,6 +84,7 @@ class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with Js
         response shouldBe pascalTriangle.replaceAll("\n", "").trim
       }
     }
+
     "return a correct answer for size=15" in {
       Get("/problems/3?size=15") ~> Server.route ~> check {
         val response = responseAs[String]
@@ -162,6 +163,7 @@ class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with Js
       secondIntList.sum    shouldBe 7329131
     }
   }
+  */
 
   "(6) The sixth problem" should {
     "return a correct answer for f(x)=5x+7" in {
@@ -196,5 +198,4 @@ class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with Js
       }
     }
   }
-
 }
