@@ -1,5 +1,6 @@
 package com.intersys.mdc.challenge.exercises.problems
 
+import akka.http.scaladsl.marshalling.ToResponseMarshallable
 import akka.http.scaladsl.server.Route
 
 case object Problem1 extends Problem {
@@ -41,9 +42,15 @@ case object Problem1 extends Problem {
       parameters('firstWord.as[String], 'secondWord.as[String]) {
         (first, second) => {
           val challengeSolution: MixedString = {
-            // <---- Your code starts here. --->
-            ???
-            // <---- Your code ends  here. ---->
+            val maxStringSize = if (first.length() > second.length()) first.length() else second.length()
+            var mixed = ""
+            var pos = 0
+
+            for(pos <- 0 to maxStringSize - 1) {
+              mixed = mixed + first.getStr(pos) + second.getStr(pos)
+            }
+
+            MixedString(first, second, mixed)
           }
           complete(challengeSolution)
         }
