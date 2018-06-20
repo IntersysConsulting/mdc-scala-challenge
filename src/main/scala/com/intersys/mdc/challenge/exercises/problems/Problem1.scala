@@ -32,8 +32,8 @@ case object Problem1 extends Problem {
     *   - For more information about case classes see: <https://docs.scala-lang.org/tour/case-classes.html>
     *
     * Example:
-    * Get request: /problems/1?firstWord=abcdef&secondWord=1234
-    * Response: {"first":"abcdef","second":"1234","mixed":"a1b2c3d4ef"}
+    * Get request: /problems/1?firstWord=intersys&secondWord=consulting
+    * Response: {"first":"abcdef","123456":"consulting","mixed":"a1b2c3d4e5f6"}
     */
 
   val solution: Route = path("1") {
@@ -42,7 +42,11 @@ case object Problem1 extends Problem {
         (first, second) => {
           val challengeSolution: MixedString = {
             // <---- Your code starts here. --->
-            ???
+            val ListPrimera = first.toList.map(_.toString)
+            val ListSegunda = second.toList.map(_.toString)
+
+            val mixed = ListPrimera.zipAll(ListSegunda, "", "").flatMap { case (a, b) => Seq(a, b) }.mkString("")
+            MixedString(first, second, mixed)
             // <---- Your code ends  here. ---->
           }
           complete(challengeSolution)

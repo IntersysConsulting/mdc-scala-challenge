@@ -33,7 +33,7 @@ case object Problem5 extends Problem {
     *
     * Examples:
     * Get Request: /problems/5?a=5&b=6&c=2
-    * Response: {"len":3,"sum":13,"mult":60,"str":"5 -> 6 -> 2 -> "}
+    * Response: {"len":3,"sum":7,"mult":60,"str":"5 -> 6 -> 2 -> "}
     */
 
   case class IntListResult(len: Int, sum: Int, mult: Int, str: String)
@@ -47,21 +47,47 @@ case object Problem5 extends Problem {
     }
 
     // A) Implement the length method
-    def length: Int = ???
+
+    def length: Int = this match {
+      case Final => 0
+      case Item(head, tail) => tail.length + 1
+    }
 
     // B) Implement the sum method
-    def sum: Int = ???
+
+    def sum: Int = this match {
+      case Final => 0
+      case Item(head, tail) => head + tail.sum
+    }
 
     // C) Implement a generalization of the above methods and call it fold.
     // def fold(end: Int, f: ???): Int = ???
 
+    def fold(end: Int, f: (Int, Int) => Int): Int = this match {
+      case Final => end
+      case Item(head, tail) => f(head, tail.fold(end, f))
+    }
+
+    def length2: Int = fold(0, (_, tail) => 1 + tail)
+
+    def sum2: Int = fold(0, (head, tail) => head + tail)
+
+    def innerProd: Int = fold(1, (head, tail) => head * tail)
 
     // D) Implement a generic fold (generalization over the fold on C).
     // def genericFold[B](end: ???, f: ???): B = ???
 
+    def genericFold[B](end: B, f: (Int, B) => B): B = this match {
+      case Final => end
+      case Item(head, tail) => f(head, tail.genericFold(end, f))
+    }
+
+    def stringRep: String = genericFold[String]("", (head, tail) => head + " -> " + tail)
+
   }
 
   final object Final extends IntList
+
   final case class Item(head: Int, tail: IntList) extends IntList
 
   val solution: Route = path("5") {
@@ -73,7 +99,14 @@ case object Problem5 extends Problem {
 
           // E) Complete the challengeResponse with the inner multiplication of the list using the fold method.
           // F) Use the generic fold to create a string representation of the list.
-          val challengeResponse: IntListResult = ???
+          val challengeResponse: IntListResult = {
+            val len = myList.length2
+            val suma = myList.sum2
+            val mult = myList.innerProd
+            val str = myList.stringRep
+
+            IntListResult(len,suma, mult, str)
+          }
 
           complete(challengeResponse)
         }

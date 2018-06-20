@@ -23,12 +23,34 @@ case object Problem3 extends Problem {
     * Example:
     * Get Request: /problems/3?size=3
     * Response: 1<br>1 1<br>1 2 1<br>1 3 3 1
+    * Response: 1<br>1 1<br>1 2 1<br>1 3 3 1
     */
+  //case class PascalTri(response: String)
 
   val solution: Route = path("3") {
-    // <---- Your code starts here. --->
-    ???
-    // <---- Your code ends  here. ---->
-  }
+    get {
+      parameters('size.as[Int]) {
+        size => {
+          val challengeResponse: String = {
 
+            def pascal(level: Int): List[Int] = {
+              level match {
+                case 0 => List(1)
+                case n: Int => List(1) ::: pascal(n - 1).zip(pascal(n - 1).tail).map { case (a, b) => a + b } ::: List(1)
+              }
+            }
+
+            val pre = (0 to size).toList.map(pascal)
+            val pre2 = pre.foldLeft("")((acc,e) => acc + e.mkString(" ") + "<br>")
+
+            val result = pre2.take(pre2.length-4)
+
+            result
+
+          }
+          htmlResponse(challengeResponse)
+        }
+      }
+    }
+  }
 }
