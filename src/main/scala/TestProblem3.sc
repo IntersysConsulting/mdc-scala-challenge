@@ -1,9 +1,9 @@
 package com.intersys.mdc.challenge.exercises.problems
 
 import akka.http.scaladsl.server.Route
-import com.intersys.mdc.challenge.exercises.problems.Problem1.complete
 
-case object Problem3 extends Problem {
+
+case object test1 {
 
   /**
     * Recursive Pascal Triangle
@@ -26,23 +26,9 @@ case object Problem3 extends Problem {
     * Response: 1<br>1 1<br>1 2 1<br>1 3 3 1
     */
 
-  def buildPsTriangle(size:Int, level:Int, nodes:Int, triang:List[Int] ,idx:Int, res:String):String={
-      if(level==size) return res
-      if(nodes+1==level&&level<size-1) return buildPsTriangle(size,level+1,0,triang++List(triang(idx) + triang(idx+1),1,1) , idx+2 , res+(triang(idx) + triang(idx+1))+" 1<br>1 ")
-      if(nodes+1==level&&level<=size-1) return buildPsTriangle(size,level+1,0,triang++List(triang(idx) + triang(idx+1),1,1) , idx+2 , res+(triang(idx) + triang(idx+1))+" 1")
-
-      return buildPsTriangle(size,level,nodes+1,triang:+(triang(idx).toInt+triang(idx+1).toInt),idx+1,res+(triang(idx)+triang(idx+1))+" ")
+  def main(args: Array[String]): Unit = {
+    println("Hello, world!")
   }
 
-
-
-  val solution: Route = path("3") {
-    get {
-      parameters('size.as[Int]) {
-        (size)=> {
-          htmlResponse((buildPsTriangle(size,1,0, List(1,1,1,1) ,1,"1<br>1 1<br>1 ")))
-        }
-      }
-    }
-  }
 }
+

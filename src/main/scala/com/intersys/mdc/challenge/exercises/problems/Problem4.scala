@@ -1,6 +1,7 @@
 package com.intersys.mdc.challenge.exercises.problems
 
 import akka.http.scaladsl.server.Route
+import com.intersys.mdc.challenge.exercises.problems.Problem1.{MixedString, complete, get, mixString, parameters}
 
 case object Problem4 extends Problem {
 
@@ -49,25 +50,48 @@ case object Problem4 extends Problem {
 
   val solution: Route = path("4") {
     get {
-      parameterMap {
-        params => {
+      parameters('a.as[Int],'b.as[Int],'operation.as[String]) {
+        (a,b,operation)=> {
           // <---- Your code starts here. --->
 
           // A) Implicit class here with:
           // def asInt: Option[Int] = ???
-          ???
+          implicit class StringOps(string: String) {
+            def asInt: Option[Int] = scala.util.Try(string.toInt).toOption
+          }
 
           // B) Implement the calculate method.
           // def calculate(ops: String, a: Int, b: Int): Option[Int] = ???
-          def calculate(ops: String, a: Int, b: Int): Option[Int] = ???
-
+          def calculate(ops: String, a: Int, b: Int): Option[Int] = {
+              ops match{
+                case "sum" => Some(a+b)
+                case "subtraction" => Some(a-b)
+                case "multiplication" => Some(a*b)
+                case "division" if(b>0) => Some(a/b)
+                case _ => None
+              }
+          }
           // C) Complete the challenge response variable.
           // val challengeResponse: Option[Calculation] = ???
-          val challengeResponse: Option[Calculation] = ???
+
+          /*def getParams(pars:String):Map[String,String]= {
+            println(params)
+            return params.split("&").map(x=>{(x.split("=")(0)->x.split("=")(1))}).toMap
+          }
+
+          val par=getParams(params)*/
+          var challengeResponse:Option[Calculation]=None
+
+          calculate(operation,a,b) match {
+            case None =>  challengeResponse =None
+            case Some(calc)=> challengeResponse = Some(Calculation (operation ,a,b,calculate(operation,a,b).get))
+          }
+
+                  //complete(challengeResponse)
 
           // <---- Your code ends  here. ---->
           challengeResponse match {
-            case None => badRequestResponse
+            case None => complete("The request contains bad syntax or cannot be fulfilled.")
             case Some(calc) => complete(calc)
           }
         }

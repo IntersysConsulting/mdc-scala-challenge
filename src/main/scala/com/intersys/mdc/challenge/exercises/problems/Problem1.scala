@@ -9,6 +9,10 @@ case object Problem1 extends Problem {
     def getStr(i: Int): String = scala.util.Try(string.charAt(i).toString).toOption.getOrElse("")
   }
 
+  def mixString(first:String, second:String): String= {
+    return first.zipAll(second,"","").map(x=>x._1+""+x._2).reduceLeft(_+_)
+  }
+
   final case class MixedString(first: String, second: String, mixed: String)
 
 
@@ -40,15 +44,12 @@ case object Problem1 extends Problem {
     get {
       parameters('firstWord.as[String], 'secondWord.as[String]) {
         (first, second) => {
-          val challengeSolution: MixedString = {
-            // <---- Your code starts here. --->
-            ???
-            // <---- Your code ends  here. ---->
-          }
+          val challengeSolution: MixedString = MixedString(first, second, mixString(first, second))
           complete(challengeSolution)
+          }
+
         }
       }
     }
-  }
 
 }

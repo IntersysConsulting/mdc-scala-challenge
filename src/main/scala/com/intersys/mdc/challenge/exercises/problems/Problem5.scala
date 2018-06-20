@@ -10,8 +10,7 @@ case object Problem5 extends Problem {
     * In this problem we introduce the concept of traits for data modeling and structural
     * recursion with fold. We provide an implementation of a custom LinkedList for Integers (IntList). This pattern
     * is commonly known as Sum Type Pattern (see <book: Essential Scala (4.4 The Sum Type Pattern)>).
-    * This endpoint is expecting 3 integer parameters (a, b, c) and we use our IntLint to return basic operations such as
-    * sum (sum), length (len), inner multiplication (mult) and a string representation (str) using arrows "->" for
+    *  (str) using arrows "->" for
     * each item and final element. Your goal is to complete the missing implementations of the code:
     *
     * A) Implement the length method for our IntList using pattern matching.
@@ -47,14 +46,24 @@ case object Problem5 extends Problem {
     }
 
     // A) Implement the length method
+    def lgt(x:List[Int]):Option[Int] = this match {
+      case Final => Some(x.length)
+      case _  =>  None
+    }
 
 
     // B) Implement the sum method
-
+    def sum(x:List[Int]):Option[Int] = this match {
+      case Final => Some(x.reduceLeft(_+_).toInt)
+      case _  =>  None
+    }
 
     // C) Implement a generalization of the above methods and call it fold.
     // def fold(end: Int, f: ???): Int = ???
-
+    /*sealed trait intList{
+      def fold(end:Int, f:List[Int]):Int{
+      }
+    }*/
 
     // D) Implement a generic fold (generalization over the fold on C).
     // def genericFold[B](end: ???, f: ???): B = ???

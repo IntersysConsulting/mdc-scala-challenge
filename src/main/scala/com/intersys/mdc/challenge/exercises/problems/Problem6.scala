@@ -1,6 +1,7 @@
 package com.intersys.mdc.challenge.exercises.problems
 
 import akka.http.scaladsl.server.Route
+import com.intersys.mdc.challenge.exercises.problems.Problem4.Calculation
 
 import scala.util.{Left, Right}
 
@@ -80,6 +81,32 @@ case object Problem6 extends Problem {
 
   // <---- Your code starts here. ---> (optional)
 
+  implicit class StringOps(string: String) {
+    def asDouble: Option[Double] = scala.util.Try(string.toDouble).toOption
+  }
+
+  def linInterpolation(dataList:Seq[String], res:Seq[Double], pos:Int):Seq[Double]={
+    if(pos==dataList.length) return res
+    if(dataList(pos).indexOf("miss")>=0&&pos<dataList.length-1) return linInterpolation(dataList,res :+ lerp(dataList(pos-1).asDouble.get,dataList(pos+1).asDouble.get,pos,dataList.length),pos+1)
+    return linInterpolation(dataList,res:+ dataList(pos).asDouble.get,pos+1)
+  }
+
+  def lerp(start: Double, end: Double, pos: Int, lt:Int): Double = (start + end)/2
+
+  def failInterpolation(dataList:Seq[String]):String={
+    if(dataList.length<3) return "At least 3 elements are needed to perform the operation."
+    if(!isInterpolable(dataList)) return "Failed to perform interpolation operation."
+    if(dataList(0).indexOf("miss")>=0|| dataList(dataList.length-1).indexOf("miss")>=0) return "Failed to perform interpolation operation."
+    return ""
+  }
+
+  def isInterpolable(dataList:Seq[String]):Boolean= {
+    if(dataList.length<3) return false
+    if(dataList(0).indexOf("miss")>=0 || dataList(dataList.length-1).indexOf("miss")>=0) return false
+    dataList.sliding(2).foreach((x)=> if(x(0).indexOf("miss")>=0&&x(1).indexOf("miss")>=0) return false)
+    return true
+
+  }
 
   // <---- Your code ends here. ---> (optional)
 
@@ -87,15 +114,18 @@ case object Problem6 extends Problem {
     get {
       parameters('seriesName, 'dataList.*) {
         (seriesName, dataList) =>  {
-          // <---- Your code starts here. --->
-          ???
+
+          var challengeResponse:Either[InterpolationSuccess,InterpolationFailure] =
+            if(isInterpolable(dataList.toSeq)) Left(InterpolationSuccess(seriesName, linInterpolation(dataList.toSeq,Seq[Double](),0)))
+            else Right(InterpolationFailure(seriesName,dataList.toSeq,failInterpolation(dataList.toSeq)))
+
           // <---- Your code ends  here. ---->
 
           // Uncomment this code segment when your solution is ready.
-          /**challengeResponse match {
+          challengeResponse match {
             case Right(success) => complete(success)
             case Left(failure)  => complete(failure)
-          }**/
+          }
         }
       }
     }

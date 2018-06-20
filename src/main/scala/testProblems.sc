@@ -26,10 +26,9 @@ case object Problem2 extends Problem {
     * Response: {"n":123,"k":3,"value":9}
     */
 
-  def getSuperDigit(n:String, res:Long):Long={
-    if(n.length==0&&res<10) return res
-    if(n.length==0&&res>=10) return getSuperDigit(res.toString , 0)
-    return getSuperDigit(n.substring(1) , res+ (n.substring(0,1).toLong))
+  def getSuperDigit(n:String, k:Long, res:Long):Long={
+    if(n.length==0) return res
+    return getSuperDigit(n.substring(1), k , res+n(1).toLong)
   }
 
 
@@ -40,7 +39,7 @@ case object Problem2 extends Problem {
     get {
       parameters('n.as[Long], 'k.as[Long]) {
         (n, k)=> {
-          val challengeSolution:SuperDigit = SuperDigit(n,k,getSuperDigit((getSuperDigit(n.toString,0)*k).toString,0))
+          val challengeSolution:SuperDigit = SuperDigit(n,k,getSuperDigit(n.toString,k,0))
           complete(challengeSolution)
         }
       }
