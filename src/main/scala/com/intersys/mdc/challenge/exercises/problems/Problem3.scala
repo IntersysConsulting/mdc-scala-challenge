@@ -24,11 +24,33 @@ case object Problem3 extends Problem {
     * Get Request: /problems/3?size=3
     * Response: 1<br>1 1<br>1 2 1<br>1 3 3 1
     */
+  case class pascal(n: Int)
+
+  def triangle(lev: Int): List[Int] = lev match {
+      case 0 => List(1)
+      case l: Int => List(1) ::: triangle(l - 1).zip(triangle(l - 1).tail).map { case (a, b) => a + b } ::: List(1)
+    }
+
+
+  //val level = (0 to size).toList.map(triangle)
+  //val levelString = level.foldLeft("")((chain, elements) => chain + elements.mkString(" ") + "<br>")
 
   val solution: Route = path("3") {
-    // <---- Your code starts here. --->
-    ???
-    // <---- Your code ends  here. ---->
-  }
+    get {
+      parameters('size.as[Int]) {
+        (size) => {
 
+
+          val level = (0 to size).toList.map(triangle)
+          val levelString = level.map(_.mkString(" ")).mkString("<br>")
+
+
+          htmlResponse(levelString)
+
+        }
+
+      }
+    }
+
+  }
 }
