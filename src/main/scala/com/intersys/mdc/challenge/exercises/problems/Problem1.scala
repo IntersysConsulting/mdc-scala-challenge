@@ -12,6 +12,9 @@ case object Problem1 extends Problem {
   final case class MixedString(first: String, second: String, mixed: String)
 
 
+  def mixString(first:String,second:String): String = first.zipAll(second,"","").map(xs => xs._1+""+xs._2).reduceLeft(_+_)
+
+
   /**
     * Mixing Strings
     * Description:
@@ -33,18 +36,14 @@ case object Problem1 extends Problem {
     *
     * Example:
     * Get request: /problems/1?firstWord=intersys&secondWord=consulting
-    * Response: {"first":"abcdef","123456":"consulting","mixed":"a1b2c3d4e5f6"}
+    * Response: {"first":"abcdef","second":"123456","mixed":"a1b2c3d4e5f6"}
     */
 
   val solution: Route = path("1") {
     get {
       parameters('firstWord.as[String], 'secondWord.as[String]) {
         (first, second) => {
-          val challengeSolution: MixedString = {
-            // <---- Your code starts here. --->
-            ???
-            // <---- Your code ends  here. ---->
-          }
+          val challengeSolution: MixedString = MixedString(first,second,mixString(first,second))
           complete(challengeSolution)
         }
       }

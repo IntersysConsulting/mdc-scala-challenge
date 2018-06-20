@@ -4,6 +4,28 @@ import akka.http.scaladsl.server.Route
 
 case object Problem3 extends Problem {
 
+  def factorial(n: Long): Long = n match {
+    case 0 => 1
+    case _ => n * factorial(n-1)
+  }
+
+  def tPascal(depth:Int,row:Int,column:Int,triangulo:String): String = {
+
+    if(column < row && row < depth)
+      triangulo + (factorial(row) / (factorial(column) * factorial(row-column))) + " " + tPascal(depth,row,column+1,triangulo)
+
+    else if(column == row && row < depth )
+      triangulo + (factorial(row) / (factorial(column) * factorial(row-column))) + "<br>" + "\n" + tPascal(depth,row+1,0,triangulo)
+
+    else if(column < row && row == depth )
+      triangulo + (factorial(row) / (factorial(column) * factorial(row-column))) + " " + tPascal(depth,row,column+1,triangulo)
+
+    else if(column == row && row == depth )
+      triangulo + (factorial(row) / (factorial(column) * factorial(row-column)))
+
+    else return triangulo
+  }
+
   /**
     * Recursive Pascal Triangle
     * Description:
@@ -24,11 +46,14 @@ case object Problem3 extends Problem {
     * Get Request: /problems/3?size=3
     * Response: 1<br>1 1<br>1 2 1<br>1 3 3 1
     */
-
   val solution: Route = path("3") {
-    // <---- Your code starts here. --->
-    ???
-    // <---- Your code ends  here. ---->
+    get {
+      parameter('depth.as[Int]){
+        (depth) => {
+          htmlResponse(response = tPascal(depth,0,0,"").replace("\n",""))
+        }
+      }
+    }
   }
 
 }

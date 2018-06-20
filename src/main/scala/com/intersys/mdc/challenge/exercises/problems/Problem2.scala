@@ -4,6 +4,15 @@ import akka.http.scaladsl.server.Route
 
 case object Problem2 extends Problem {
 
+  //def dupString(number:String, times:Int): String = (for(i <- 0 to times-1) yield number).mkString
+
+
+  def sumDigits(value:String,result:Long):Long = {
+      if(value.length == 0 && result < 10) return result
+      if(value.length == 0 && result >= 10) return sumDigits(result.toString,0)
+      return sumDigits(value.tail,result+value.substring(0,1).toInt)
+      }
+
   /**
     * Super Digit
     * Description:
@@ -29,8 +38,14 @@ case object Problem2 extends Problem {
 
   val solution: Route = path("2") {
     get {
-      // <---- Your code starts here. --->
-      ???
+      parameters('n.as[Long],'k.as[Long]){
+        (n,k) => {
+          //var value = dupString(n.toString,k.toInt)
+          val challengeSolution: SuperDigit =  SuperDigit(n,k,sumDigits((sumDigits(n.toString,0)*k).toString,0))
+          complete(challengeSolution)
+        }
+      }
+
       // <---- Your code ends  here. ---->
     }
   }
