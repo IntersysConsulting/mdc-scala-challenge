@@ -115,8 +115,8 @@ case object Problem6 extends Problem {
               val dArray = optionalDoubles.toArray
               missingIndices.foreach { i =>
                 dArray(i) = for {
-                  y0 <- dArray(i - 1)
-                  y1 <- dArray(i + 1)
+                  y0 <- dArray.lift(i - 1).flatten
+                  y1 <- dArray.lift(i + 1).flatten
                 } yield interpolate(y0, y1)
               }
 

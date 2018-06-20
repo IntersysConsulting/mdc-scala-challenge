@@ -11,9 +11,10 @@ case object Problem1 extends Problem {
       @tailrec def loop(xs: List[A], ys: List[A], acc: List[A]): List[A] = xs match {
         case h :: t =>
           loop(ys, t, h :: acc)
-        case Nil      =>
+        case Nil    =>
           acc reverse_::: ys
       }
+
       loop(as, that, List.empty[A])
     }
   }
