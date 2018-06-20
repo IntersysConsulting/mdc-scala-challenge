@@ -42,7 +42,9 @@ case object Problem1 extends Problem {
         (first, second) => {
           val challengeSolution: MixedString = {
             // <---- Your code starts here. --->
-            ???
+            val maxLen = (first.length max second.length) - 1
+            val mixed = (0 to maxLen).map(i => first.getStr(i) + second.getStr(i)).mkString
+            MixedString(first, second, mixed)
             // <---- Your code ends  here. ---->
           }
           complete(challengeSolution)

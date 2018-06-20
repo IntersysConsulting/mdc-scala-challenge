@@ -30,7 +30,20 @@ case object Problem2 extends Problem {
   val solution: Route = path("2") {
     get {
       // <---- Your code starts here. --->
-      ???
+      parameters('n.as[Long], 'k.as[Long]) {
+        (n, k) => {
+
+          def digitSum(num: Long): Long =
+            num.toString.toList.map(_ - 48).sum
+
+          def superDigit(num: Long): Long =
+            if (num.toString.length > 1) superDigit(digitSum(num))
+            else num
+
+          val challengeResponse: SuperDigit = SuperDigit(n, k, superDigit(k * digitSum(n)))
+          complete(challengeResponse)
+        }
+      }
       // <---- Your code ends  here. ---->
     }
   }
