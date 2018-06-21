@@ -1,5 +1,4 @@
 package com.intersys.mdc.challenge.exercises.problems
-
 import akka.http.scaladsl.server.Route
 
 case object Problem4 extends Problem {
@@ -51,19 +50,52 @@ case object Problem4 extends Problem {
     get {
       parameterMap {
         params => {
-          // <---- Your code starts here. --->
+          var params1 = params.get("a")
+          var params2 = params.get("b")
+          var params3 = params.get("operation")
 
-          // A) Implicit class here with:
-          // def asInt: Option[Int] = ???
-          ???
+          // <---- Your code starts here. --->
+          implicit class Converter(string: String) {
+            def asInt(): Option[Int] = scala.util.Try(string.toInt).toOption
+            // Try(s.toInt).toOption
+          }
+
+
 
           // B) Implement the calculate method.
           // def calculate(ops: String, a: Int, b: Int): Option[Int] = ???
-          def calculate(ops: String, a: Int, b: Int): Option[Int] = ???
+          def calculate(ops: String, a: Int, b: Int): Option[Int] = {
+            var sum: Option[Int] = None
+            if (ops == "sum")
+            {
+              sum =   Some(a + b)
+            }
+            else
+            {
+              sum = None
+            }
+
+            sum
+          }
 
           // C) Complete the challenge response variable.
           // val challengeResponse: Option[Calculation] = ???
-          val challengeResponse: Option[Calculation] = ???
+          val challengeResponse: Option[Calculation] = {
+            var firstCalculation:Option[Int] = calculate(params3.get,Converter(params1.get).asInt().get, Converter(params2.get).asInt().get)
+            // var value: Option= firstCalculation.getOrElse(None)
+            var value :Option[Calculation]=None
+            if (firstCalculation != None)
+            {
+
+              var calc = Calculation("sum", Converter(params1.get).asInt().get, Converter(params2.get).asInt().get, firstCalculation.get)
+              value = Some(calc)
+            }
+
+            value
+
+            //var calc = firstCalculation
+
+          }
 
           // <---- Your code ends  here. ---->
           challengeResponse match {

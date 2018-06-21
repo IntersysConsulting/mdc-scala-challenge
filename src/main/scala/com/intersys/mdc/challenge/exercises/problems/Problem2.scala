@@ -25,12 +25,36 @@ case object Problem2 extends Problem {
     * Response: {"n":123,"k":3,"value":9}
     */
 
+  def getSuperDigitt(n:Long, k:Long) : Long = {
+
+    def getSum(number:Long) : Long = {
+      var sum = number match{
+        case number if number.toString().length() == 1 => {number}
+        case number if number.toString().length() > 1 =>getSum(number.toString.map{ _.asDigit }.sum)
+      }
+      sum
+    }
+    getSum(getSum(n) * k)
+  }
+
+
+
   case class SuperDigit(n: Long, k: Long, value: Long)
 
   val solution: Route = path("2") {
     get {
       // <---- Your code starts here. --->
-      ???
+      parameters('n.as[String], 'k.as[String]) {
+        (n, k) => {
+          val challengeSolution: SuperDigit = {
+            var value = getSuperDigitt(n.toLong, k.toLong)
+            var retorno = SuperDigit(n.toLong,k.toLong, value.toLong)
+            retorno
+          }
+          complete(challengeSolution)
+        }
+      }
+
       // <---- Your code ends  here. ---->
     }
   }

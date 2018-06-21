@@ -36,13 +36,110 @@ case object Problem1 extends Problem {
     * Response: {"first":"abcdef","second":"1234","mixed":"a1b2c3d4ef"}
     */
 
+ /* var mixure = (inputOne:String, inputTwo:String) => {
+
+    val lower = (low:String, high:String) =>{
+      var newString=""
+      for (i <- 0 until low.length()){
+        newString = newString +  low.charAt(i).toString() + high.charAt(i).toString()
+      }
+
+      for (i <- low.length until high.length() )//if i >= inputOneLength )
+      {  newString = newString + high.charAt(i).toString()}
+      newString
+
+    }
+
+    val higher = (low:String, high:String) =>{
+      var newString=""
+      for (i <- 0 until high.length()){
+        newString = newString + low.charAt(i).toString() + high.charAt(i).toString()
+      }
+
+      for (i <- high.length until low.length() )//if i >= inputOneLength )
+      {  newString = newString + low.charAt(i).toString() }
+      newString
+
+    }
+
+    val equal = (valueOne: String, valueTwo:String)=>{
+      var newString=""
+      for (i <- 0 until valueOne.length()){
+        newString = newString +  valueOne.charAt(i).toString() + valueTwo.charAt(i).toString() }
+      newString
+
+    }
+
+    if (inputOne.length() < inputTwo.length)
+    {
+      lower(inputOne, inputTwo)
+
+    }
+
+    else if (inputOne.length() > inputTwo.length)
+    {
+      higher(inputOne, inputTwo)
+
+    }
+    else
+      equal(inputOne, inputTwo)
+  }*/
+  /*def mixure(inputOne:String, inputTwo:String):String=
+  {
+    // var inputOne : String = "Holaw"
+    //var inputTwo:String = "1234"
+
+    var newString = "";
+    if (inputOne.length() < inputTwo.length)
+    {
+      for (i <- 0 until inputOne.length()){
+        newString = newString +  inputOne.charAt(i).toString() + inputTwo.charAt(i).toString()
+      }
+
+      for (i <- inputOne.length until inputTwo.length() )//if i >= inputOneLength )
+      {  newString = newString + inputTwo.charAt(i).toString() }
+      println(newString)
+    }
+
+    else if (inputOne.length() == inputTwo.length)
+    {
+      for (i <- 0 until inputOne.length()){
+        newString = newString +  inputOne.charAt(i).toString() + inputTwo.charAt(i).toString()
+      }
+      println(newString)
+
+    }
+
+    else if (inputOne.length() > inputTwo.length)
+    {
+      for (i <- 0 until inputTwo.length()){
+        newString = newString +  inputOne.charAt(i).toString() + inputTwo.charAt(i).toString
+      }
+
+      for (i <- inputTwo.length until inputOne.length() )//if i >= inputOneLength )
+      {  newString = newString + inputOne.charAt(i).toString }
+      println(newString)
+    }
+    newString
+  }*/
+
+
   val solution: Route = path("1") {
     get {
       parameters('firstWord.as[String], 'secondWord.as[String]) {
         (first, second) => {
           val challengeSolution: MixedString = {
             // <---- Your code starts here. --->
-            ???
+           // var mix = mixure(first, second)
+            var mix = (first.zipAll(second,"","").map{ case (val1,val2) => s"$val1$val2" }).mkString
+            //var mixure = MixedString("123", "ABC", "1A2B3C")
+            var abc = MixedString(first, second, mix)
+            abc
+            // <---- Your code starts here. --->
+            //var abc = MixedString("123", "ABC", "1A2B3C")
+            // abc
+
+            // <---- Your code ends  here. ---->
             // <---- Your code ends  here. ---->
           }
           complete(challengeSolution)

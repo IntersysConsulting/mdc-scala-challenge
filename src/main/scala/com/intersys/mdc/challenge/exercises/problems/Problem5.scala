@@ -47,17 +47,38 @@ case object Problem5 extends Problem {
     }
 
     // A) Implement the length method
-    def length: Int = ???
+    def length(): Int = this match{
+      case Final  => 0
+      case Item(head, tail) =>  1 + tail.length()
 
+    }
     // B) Implement the sum method
-    def sum: Int = ???
+    def sum(): Int = this match{
+      case Final  => 0
+      case Item(head, tail) => head + tail.sum
+
+    }
 
     // C) Implement a generalization of the above methods and call it fold.
-    // def fold(end: Int, f: ???): Int = ???
+    def fold(end: Int,f:(Int, Int)=> Int ):Int = this match {
+      case Final => end
+      //case Item(head, tail) => end + tail.fold(end, f)
+      case Item(head, tail) => f(head , tail.fold(end, f))
 
+    }
+
+    def fold[A](end: A, f: (Int, A) => A): A =
+      this match {
+        case Final => end
+        case Item(hd, tl) => f(hd, tl.fold(end, f))
+      }
 
     // D) Implement a generic fold (generalization over the fold on C).
     // def genericFold[B](end: ???, f: ???): B = ???
+    def multiplication: Int =
+      fold[Int](1, (hd, tl) => hd * tl)
+
+
 
   }
 
@@ -72,8 +93,10 @@ case object Problem5 extends Problem {
           val myList = Item(a, Item(b, Item(c, Final)))
 
           // E) Complete the challengeResponse with the inner multiplication of the list using the fold method.
+
           // F) Use the generic fold to create a string representation of the list.
-          val challengeResponse: IntListResult = ???
+          var result = IntListResult(myList.length(), myList.sum(), myList.multiplication, a+" -> "+b+" -> "+c + " -> ")
+          val challengeResponse: IntListResult = result
 
           complete(challengeResponse)
         }
