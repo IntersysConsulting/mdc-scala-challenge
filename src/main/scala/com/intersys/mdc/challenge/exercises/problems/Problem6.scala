@@ -1,6 +1,8 @@
 package com.intersys.mdc.challenge.exercises.problems
 
 import akka.http.scaladsl.server.Route
+import util.control.Breaks
+import com.intersys.mdc.challenge.exercises.problems.Problem5.IntListResult
 
 import scala.util.{Left, Right}
 
@@ -78,24 +80,45 @@ case object Problem6 extends Problem {
   case class InterpolationSuccess(seriesName: String, result: Seq[Double])
   case class InterpolationFailure(seriesName: String, data: Seq[String], reason: String)
 
-  // <---- Your code starts here. ---> (optional)
-
-
-  // <---- Your code ends here. ---> (optional)
 
   val solution: Route = path("6") {
     get {
       parameters('seriesName, 'dataList.*) {
+        var success:InterpolationSuccess = null;
+        var fail:InterpolationFailure= null;
+        val challengeResponse: Either[InterpolationFailure, InterpolationSuccess] = null;
         (seriesName, dataList) =>  {
-          // <---- Your code starts here. --->
-          ???
-          // <---- Your code ends  here. ---->
+          var valores = dataList
+          if (dataList.toList.length < 3)
+            {
+              fail = InterpolationFailure(seriesName, dataList.toList, "At least 3 elements are needed to perform the operation." )
+            }
+          else {
+            var z = dataList.sliding(3).toList.filter(e => e.toList(1).startsWith("miss") && e.toList(0).startsWith("miss") == false && e.toList(2).startsWith("miss") == false)
+            var sorted: Seq[Any] = null;
+            if (z.length >= 1) {
+              valores ++= z.map(a => ((a.head.toInt + a.last.toInt) / 2).toString)
+              sorted = valores.filter(e => e.startsWith("miss") == false).map(e => e.toFloat).toList.sorted
+              success = InterpolationSuccess(seriesName, sorted.toList.map(_.toString.toDouble))
+            }
+            else {
+              sorted = valores.toList
+              fail = InterpolationFailure(seriesName, sorted.seq.map(_.toString), "Failed to perform interpolation operation.")
+            }
+          }
 
+          var challengeResponse: Either[InterpolationFailure, InterpolationSuccess] = null
+          if (success != null){
+            challengeResponse = Right(success)
+          }
+          else{
+            challengeResponse = Left(fail)
+          }
           // Uncomment this code segment when your solution is ready.
-          /**challengeResponse match {
+          challengeResponse match {
             case Right(success) => complete(success)
             case Left(failure)  => complete(failure)
-          }**/
+          }
         }
       }
     }
