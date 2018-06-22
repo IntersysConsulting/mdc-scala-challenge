@@ -97,9 +97,23 @@ case object Problem6 extends Problem {
             var z = dataList.sliding(3).toList.filter(e => e.toList(1).startsWith("miss") && e.toList(0).startsWith("miss") == false && e.toList(2).startsWith("miss") == false)
             var sorted: Seq[Any] = null;
             if (z.length >= 1) {
-              valores ++= z.map(a => ((a.head.toInt + a.last.toInt) / 2).toString)
-              sorted = valores.filter(e => e.startsWith("miss") == false).map(e => e.toFloat).toList.sorted
-              success = InterpolationSuccess(seriesName, sorted.toList.map(_.toString.toDouble))
+
+              var valuesToAdd = z.map(a => ((a.head.toInt + a.last.toInt) / 2).toString)
+              var count:Int = 0;
+
+               var retorno:List[String] = List()
+                for (i<- 0 until valores.toList.length)
+                 {
+                   if (valores.toList(i).contains("miss")){
+                     retorno = valuesToAdd(count) :: retorno
+                     count = count + 1
+                   }else {
+                     retorno = valores.toList(i) :: retorno
+                   }
+                 }
+
+              sorted = retorno.map(_.toDouble).reverse
+              success = InterpolationSuccess(seriesName, sorted.map(_.toString.toDouble))
             }
             else {
               sorted = valores.toList
