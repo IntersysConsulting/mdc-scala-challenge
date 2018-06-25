@@ -1,7 +1,6 @@
 package com.intersys.mdc.challenge.exercises.problems
 
 import akka.http.scaladsl.server.Route
-import scalaz._
 import com.intersys.mdc.challenge.exercises.problems.Problem1.{MixedString, complete, get, parameters}
 
 case object Problem3 extends Problem {
