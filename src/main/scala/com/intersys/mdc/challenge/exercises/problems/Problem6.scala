@@ -53,7 +53,7 @@ case object Problem6 extends Problem {
     *   - The Akka Http framework provides dataList elements from right to left.
     *   - In this case, the missing value for the linear function is 3 which is correctly estimated from the linear interpolation.
     *
-    * Get Request: /problems/6?seriesName=f(x)=x^2&dataList=16&dataList=missing&dataList=4&dataList=1&dataList=0
+    * Get Request: /problems/6?seriesName=f(x)=x^2&dataList=16&dataList=missing&dataList=4&dataList=1&dataList=0  m = (y3-y1)/(x3-x1) b = y3 – m * x3
     * Response: {"seriesName":"f(x)=x^2","result":[0.0,1.0,4.0,10.0,16.0]}
     * - Notes:
     *   - Here the missing value is 9 but the linear interpolation estimates 10.
@@ -78,24 +78,33 @@ case object Problem6 extends Problem {
   case class InterpolationSuccess(seriesName: String, result: Seq[Double])
   case class InterpolationFailure(seriesName: String, data: Seq[String], reason: String)
 
-  // <---- Your code starts here. ---> (optional)
-
-
-  // <---- Your code ends here. ---> (optional)
-
   val solution: Route = path("6") {
     get {
       parameters('seriesName, 'dataList.*) {
         (seriesName, dataList) =>  {
-          // <---- Your code starts here. --->
-          ???
-          // <---- Your code ends  here. ---->
+
+          val l = dataList.toList
+          val reason : String =
+            if (l.size < 3)
+              "At least 3 elements are needed to perform the operation."
+            else if(l.map(_.charAt(0)) mkString("m","","m") contains("mm"))
+              "Failed to perform interpolation operation."
+            else ""
+          val challengeResponse : Either[InterpolationFailure,InterpolationSuccess] =
+            if (reason.isEmpty){
+              val a = l.tail.map(a => if(a.startsWith("m")) 1.0 else a.toDouble):+1.0
+              val b = 1.0::l.map(a => if(a.startsWith("m")) 1.0 else a.toDouble)
+              val r = (l.zipWithIndex,a,b).zipped.map((y,y2,y1) => if(y._1.startsWith("m")) ((((y2 - y1)/2) * y._2) + (y2 - ((y2 - y1)/2) *(y._2 + 1))) else y._1.toDouble )
+              Right(InterpolationSuccess(seriesName,r))
+            } else{
+              Left(InterpolationFailure(seriesName,dataList.toSeq,reason))
+            }
 
           // Uncomment this code segment when your solution is ready.
-          /**challengeResponse match {
+          challengeResponse match {
             case Right(success) => complete(success)
             case Left(failure)  => complete(failure)
-          }**/
+          }
         }
       }
     }

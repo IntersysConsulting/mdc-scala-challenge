@@ -53,17 +53,28 @@ case object Problem4 extends Problem {
         params => {
           // <---- Your code starts here. --->
 
-          // A) Implicit class here with:
-          // def asInt: Option[Int] = ???
-          ???
+          implicit class StringOps[A](s : String){
+            def asInt: Option[Int]  = Some(s.toInt)
+          }
 
           // B) Implement the calculate method.
           // def calculate(ops: String, a: Int, b: Int): Option[Int] = ???
-          def calculate(ops: String, a: Int, b: Int): Option[Int] = ???
+          def calculate(ops: String, a: Int, b: Int): Option[Int] = ops match {
+            case "sum" => Some(a+b)
+            case "sub" => Some(a-b)
+            case "mul" => Some(a*b)
+            case "div" => Some(a/b)
+            case _ => None
+          }
 
           // C) Complete the challenge response variable.
           // val challengeResponse: Option[Calculation] = ???
-          val challengeResponse: Option[Calculation] = ???
+          val challengeResponse: Option[Calculation] = for {
+            a <- params.get("a")
+            b <- params.get("b")
+            op <- params.get("operation")
+            r <- calculate(op, a.toInt, b.toInt)
+          } yield Calculation(op, a.asInt.get, b.asInt.get, r)
 
           // <---- Your code ends  here. ---->
           challengeResponse match {

@@ -41,10 +41,10 @@ case object Problem1 extends Problem {
       parameters('firstWord.as[String], 'secondWord.as[String]) {
         (first, second) => {
           val challengeSolution: MixedString = {
-            // <---- Your code starts here. --->
-            ???
-            // <---- Your code ends  here. ---->
+            val mixed = first.zipAll(second,"","").mkString.filter(c => c.isLetter)
+            MixedString(first, second, mixed)
           }
+
           complete(challengeSolution)
         }
       }

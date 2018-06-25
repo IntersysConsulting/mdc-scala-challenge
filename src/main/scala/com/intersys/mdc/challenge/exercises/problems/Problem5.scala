@@ -2,6 +2,8 @@ package com.intersys.mdc.challenge.exercises.problems
 
 import akka.http.scaladsl.server.Route
 
+import scala.annotation.tailrec
+
 case object Problem5 extends Problem {
 
   /**
@@ -46,18 +48,38 @@ case object Problem5 extends Problem {
       case Item(head, tail) => Item(f(head), tail)
     }
 
+
+
     // A) Implement the length method
-    def length: Int = ???
+    def length: Int = this match {
+      case Final => 0
+      case Item(head, tail) => 1 + tail.length
+    }
 
     // B) Implement the sum method
-    def sum: Int = ???
+    def sum: Int = this match {
+      case Final => 0
+      case Item(head, tail) => head + tail.sum
+    }
+
 
     // C) Implement a generalization of the above methods and call it fold.
     // def fold(end: Int, f: ???): Int = ???
-
+//    def fold(end: Int, l: IntList)(f:(Int,Int)=>Int): Int = l match {
+//      case Final => end
+//      case Item(head, tail) => f(fold(end, tail)(f),head)
+//
+//    }
+    def fold(f:(Int,Int)=>Int): Int = this match {
+//      case Final => 1
+      case Item(head, tail) => if (tail == Final) head else f(tail.fold(f),head)
+    }
 
     // D) Implement a generic fold (generalization over the fold on C).
-    // def genericFold[B](end: ???, f: ???): B = ???
+    def genericFold[A](f:(A,Int)=>A): A = this match {
+      case Item(head, tail) =>  f(tail.genericFold(f),head)
+      case Final =>  "".asInstanceOf[A]
+    }
 
   }
 
@@ -70,11 +92,13 @@ case object Problem5 extends Problem {
         (a, b, c) => {
 
           val myList = Item(a, Item(b, Item(c, Final)))
+//          val myList = Item(1, Item(2, Item(3, Final)))
+
 
           // E) Complete the challengeResponse with the inner multiplication of the list using the fold method.
-          // F) Use the generic fold to create a string representation of the list.
-          val challengeResponse: IntListResult = ???
-
+          // F) Use the generic fold to create a string representation of the l∫ist.
+          val challengeResponse: IntListResult = IntListResult(myList.length,myList.sum,myList.fold(_*_),myList.genericFold((a:String,n)=>n+" -> "+a ))
+//          val challengeResponse: IntListResult = ???
           complete(challengeResponse)
         }
       }

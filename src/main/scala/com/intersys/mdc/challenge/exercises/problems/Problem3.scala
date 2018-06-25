@@ -1,6 +1,7 @@
 package com.intersys.mdc.challenge.exercises.problems
 
 import akka.http.scaladsl.server.Route
+import com.intersys.mdc.challenge.exercises.problems.Problem1.{MixedString, complete, get, parameters}
 
 case object Problem3 extends Problem {
 
@@ -26,9 +27,25 @@ case object Problem3 extends Problem {
     */
 
   val solution: Route = path("3") {
-    // <---- Your code starts here. --->
-    ???
-    // <---- Your code ends  here. ---->
-  }
+    get {
+      parameters('size.as[Int]) {
+        (size) => {
+          var a = "1<br>"
+          val next = (l :List[Int]) => {
+            val rn = (1::((l,l.tail).zipped.map(_ + _):+1))
+            a++=(rn.mkString(" ")++("<br>"))
+            rn
+          }
 
+          Iterator.iterate(List(1))(next).drop(size).next
+          //rintln(a)
+          //def times[A](n:Int, f:A=>A, a:A):A = Iterator.iterate(a)(f).drop(n).next
+          //def times[A](n:Int, f:A=>A, a:A):A = if (n==0) a else ntimes(n-1, f, f(a))
+
+          htmlResponse(a.substring(0,a.lastIndexOf("<br>")))
+        }
+      }
+    }
+  }
 }
+
