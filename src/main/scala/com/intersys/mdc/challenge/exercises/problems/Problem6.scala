@@ -80,7 +80,6 @@ case object Problem6 extends Problem {
 
   // <---- Your code starts here. ---> (optional)
 
-
   // <---- Your code ends here. ---> (optional)
 
   val solution: Route = path("6") {
@@ -88,7 +87,10 @@ case object Problem6 extends Problem {
       parameters('seriesName, 'dataList.*) {
         (seriesName, dataList) =>  {
           // <---- Your code starts here. --->
-          ???
+          implicit class StringOps(string: String) {
+            def asDouble = scala.util.Try(string.toDouble).toOption
+          }
+
           // <---- Your code ends  here. ---->
 
           // Uncomment this code segment when your solution is ready.

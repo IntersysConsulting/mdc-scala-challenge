@@ -29,10 +29,21 @@ case object Problem2 extends Problem {
 
   val solution: Route = path("2") {
     get {
-      // <---- Your code starts here. --->
-      ???
-      // <---- Your code ends  here. ---->
+      parameters('n.as[Long], 'k.as[Long]) {
+        (n, k) => {
+          val challengeResponse: SuperDigit = {
+
+            def rec(n: Long): Long = {
+              if (n.toString.length > 1) rec(n.toString.toList.map(_.toString.toLong).sum) else n
+            }
+
+            val value = rec(n.toString.toList.map(_.toString.toLong).sum * k)
+            SuperDigit(n, k, value)
+          }
+
+          complete(challengeResponse)
+        }
+      }
     }
   }
-
 }

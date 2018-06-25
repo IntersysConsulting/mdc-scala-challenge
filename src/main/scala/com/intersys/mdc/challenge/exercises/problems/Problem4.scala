@@ -55,15 +55,40 @@ case object Problem4 extends Problem {
 
           // A) Implicit class here with:
           // def asInt: Option[Int] = ???
-          ???
+          implicit class StringOps(string: String) {
+            def asInt = scala.util.Try(string.toInt).toOption
+          }
 
           // B) Implement the calculate method.
           // def calculate(ops: String, a: Int, b: Int): Option[Int] = ???
-          def calculate(ops: String, a: Int, b: Int): Option[Int] = ???
+          def calculate(ops: String, a: Int, b: Int): Option[Int] = {
+            ops match {
+              case "sum" => Some(a + b)
+              case "subtraction" => Some(a - b)
+              case "multiplication" => Some(a * b)
+              case "division" if b != 0 => Some(a / b)
+              case _ => None
+            }
+          }
 
           // C) Complete the challenge response variable.
           // val challengeResponse: Option[Calculation] = ???
-          val challengeResponse: Option[Calculation] = ???
+          val challengeResponse: Option[Calculation] = {
+            val a = params.get("a")
+            val b = params.get("b")
+            val ops = params.get("operation")
+
+            val result = for {
+              af <- a
+              bf <- b
+              opsf <- ops
+              aff <- af.asInt
+              bff <- bf.asInt
+              e <- calculate(opsf, aff, bff)
+            } yield Calculation(opsf, aff, bff, e)
+
+            result
+          }
 
           // <---- Your code ends  here. ---->
           challengeResponse match {
