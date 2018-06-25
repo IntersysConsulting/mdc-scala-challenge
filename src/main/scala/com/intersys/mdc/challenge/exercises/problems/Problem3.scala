@@ -25,9 +25,46 @@ case object Problem3 extends Problem {
     * Response: 1<br>1 1<br>1 2 1<br>1 3 3 1
     */
 
+  var x = (value: Int) => {
+    var retorno = "";
+    def pascal(c: Int, r: Int): Int = if (c == r || c == 0) 1 else pascal(c - 1, r - 1) + pascal(c, r - 1)
+
+    for (row <- 0 to value) {
+      for (col <- 0 to row) {
+        retorno = retorno + pascal(col, row).toString()
+        if (col == row && col != value) {
+          retorno = retorno + "<br>"
+        }
+        else if (col!=row && col!=value)
+          (retorno = retorno + " ")
+      }
+
+    }
+    retorno
+  }
+
+
+
   val solution: Route = path("3") {
     // <---- Your code starts here. --->
-    ???
+    get {
+
+      parameters('size.as[String]) {
+
+        size => {
+          val challengeSolution: String = {
+            val retorno =  x(size.toInt)
+            retorno
+          }
+          htmlResponse(challengeSolution)
+          //complete(challengeSolution)
+        }
+        // <---- Your code starts here. --->
+        /// ???
+        // <---- Your code ends  here. ---->
+      }
+
+    }
     // <---- Your code ends  here. ---->
   }
 
