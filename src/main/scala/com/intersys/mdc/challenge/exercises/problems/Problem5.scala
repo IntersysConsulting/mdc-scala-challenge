@@ -39,26 +39,31 @@ case object Problem5 extends Problem {
   case class IntListResult(len: Int, sum: Int, mult: Int, str: String)
 
   sealed trait IntList {
-
     // Example method that uses pattern matching
     def map(f: Int => Int): IntList = this match {
       case Final => Final
       case Item(head, tail) => Item(f(head), tail)
     }
 
-    // A) Implement the length method
-    def length: Int = ???
+    def length: Int = this match {
+      case Item(head, tail) => 1 + tail.length
+      case Final => 0
+    }
 
-    // B) Implement the sum method
-    def sum: Int = ???
+    def sum: Int = this match {
+      case Item(head, tail) => head + tail.sum
+      case Final => 0
+    }
 
-    // C) Implement a generalization of the above methods and call it fold.
-    // def fold(end: Int, f: ???): Int = ???
+    def fold(end: Int, f: (Int, Int) => Int): Int = this match {
+      case Item(head, tail) => f(head, tail.fold(end, f))
+      case Final => end
+    }
 
-
-    // D) Implement a generic fold (generalization over the fold on C).
-    // def genericFold[B](end: ???, f: ???): B = ???
-
+    def genericFold[B](end: B, f: (Int, B) => B): B = this match {
+      case Item(head, tail) => f(head, tail.genericFold(end, f))
+      case Final => end
+    }
   }
 
   final object Final extends IntList
@@ -71,9 +76,10 @@ case object Problem5 extends Problem {
 
           val myList = Item(a, Item(b, Item(c, Final)))
 
-          // E) Complete the challengeResponse with the inner multiplication of the list using the fold method.
-          // F) Use the generic fold to create a string representation of the list.
-          val challengeResponse: IntListResult = ???
+          val challengeResponse: IntListResult = IntListResult(myList.length,
+                                                               myList.sum,
+                                                               myList.fold(1, _ * _),
+                                                               myList.genericFold("", (h: Int, t: String) => h.toString + " -> " + t))
 
           complete(challengeResponse)
         }
