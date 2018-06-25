@@ -1,6 +1,9 @@
 package com.intersys.mdc.challenge.exercises.problems
 
 import akka.http.scaladsl.server.Route
+import com.intersys.mdc.challenge.exercises.problems.Problem2.{SuperDigit, complete, get, parameters, superDigit}
+
+import scala.annotation.tailrec
 
 case object Problem3 extends Problem {
 
@@ -24,11 +27,34 @@ case object Problem3 extends Problem {
     * Get Request: /problems/3?size=3
     * Response: 1<br>1 1<br>1 2 1<br>1 3 3 1
     */
+  def factorial (n:Int):BigInt = {
+    @tailrec
+    def fact(i: BigInt, accumulator: BigInt): BigInt = {
+      if (i <= 1) accumulator
+      else fact(i - 1, i * accumulator)
+    }
+    fact(n,1)
+  }
 
+  def combinations(m:Int,n:Int):BigInt={
+    factorial(m)./(factorial(n)*factorial(m-n))
+  }
+
+  def pascalLine(line:Int):String={
+    0.to(line).toArray.map(x=>String.valueOf(combinations(line,x))).mkString(" ")
+  }
+
+  def pascalTriangle(level:Int):String={
+    0.to(level).toArray.map(x=>pascalLine(x)).mkString("<br>")
+  }
   val solution: Route = path("3") {
-    // <---- Your code starts here. --->
-    ???
-    // <---- Your code ends  here. ---->
+    get {
+      parameters('size.as[Int]){
+        (size)=>{
+          this.htmlResponse(pascalTriangle(size))
+        }
+      }
+    }
   }
 
 }

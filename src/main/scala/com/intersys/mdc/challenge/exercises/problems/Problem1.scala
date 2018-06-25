@@ -35,16 +35,21 @@ case object Problem1 extends Problem {
     * Get request: /problems/1?firstWord=abcdef&secondWord=1234
     * Response: {"first":"abcdef","second":"1234","mixed":"a1b2c3d4ef"}
     */
+  def mixStrings(s1:String,s2:String):String = {
+    var longer = s1
+    var shorter = s2
+    if(shorter.length>longer.length) {
+      longer = s2
+      shorter = s1
+    }
+    s1.zip(s2).flatMap(pair => Seq(pair._1,pair._2)).mkString+longer.drop(shorter.length)
+  }
 
   val solution: Route = path("1") {
     get {
       parameters('firstWord.as[String], 'secondWord.as[String]) {
         (first, second) => {
-          val challengeSolution: MixedString = {
-            // <---- Your code starts here. --->
-            ???
-            // <---- Your code ends  here. ---->
-          }
+          val challengeSolution: MixedString = MixedString(first,second,mixStrings(first,second))
           complete(challengeSolution)
         }
       }
