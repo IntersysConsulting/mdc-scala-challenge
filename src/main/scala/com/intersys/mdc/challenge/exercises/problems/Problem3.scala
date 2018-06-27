@@ -48,9 +48,9 @@ case object Problem3 extends Problem {
     */
   val solution: Route = path("3") {
     get {
-      parameter('depth.as[Int]){
-        (depth) => {
-          htmlResponse(response = tPascal(depth,0,0,"").replace("\n",""))
+      parameter('size.as[Int]){
+        (size) => {
+          htmlResponse(response = tPascal(size,0,0,"").replace("\n",""))
         }
       }
     }
