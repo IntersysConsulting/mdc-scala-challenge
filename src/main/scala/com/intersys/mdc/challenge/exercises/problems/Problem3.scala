@@ -48,6 +48,8 @@ case object Problem3 extends Problem {
     get {
       parameters('size.as[Int]) {
         size => complete(pascalTriangle(size))
+        //Emmanuel Vallejo: On exersices directives it says: 1 point for completing the endpoint as requested (using htmlResponse).
+        //no htmlResponse used on this exersice
       }
     }
     // <---- Your code ends  here. ---->
