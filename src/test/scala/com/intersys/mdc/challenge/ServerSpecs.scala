@@ -84,6 +84,7 @@ class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with Js
         response shouldBe pascalTriangle.replaceAll("\n", "").trim
       }
     }
+
     "return a correct answer for size=15" in {
       Get("/problems/3?size=15") ~> Server.route ~> check {
         val response = responseAs[String]
@@ -196,5 +197,4 @@ class ServerSpecs extends WordSpec with Matchers with ScalatestRouteTest with Js
       }
     }
   }
-
 }
