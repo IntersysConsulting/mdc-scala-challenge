@@ -48,7 +48,8 @@ case object Problem1 extends Problem {
 
             for(pos <- 0 to maxStringSize - 1) {
               mixed = mixed + first.getStr(pos) + second.getStr(pos)
-            }
+            } //Emmanuel Vallejo: Instructions on directives file indicates that the point on this exersice is for using scala collections (zip, zipWith, etc), map, flatMap, or recursion.
+              //This solution works but is only using strings and for cycles
 
             MixedString(first, second, mixed)
           }
