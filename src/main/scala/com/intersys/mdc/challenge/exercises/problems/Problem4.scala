@@ -45,6 +45,10 @@ case object Problem4 extends Problem {
     * Response (bad request): The request contains bad syntax or cannot be fulfilled.
     */
 
+  implicit class StringOps(string: String) {
+    def asInt: Option[Int] = scala.util.Try(Some(string.toInt)).toOption.getOrElse(None)
+  }
+
   case class Calculation(operation: String, a: Int, b: Int, result: Int)
 
   val solution: Route = path("4") {
@@ -55,15 +59,42 @@ case object Problem4 extends Problem {
 
           // A) Implicit class here with:
           // def asInt: Option[Int] = ???
-          ???
 
           // B) Implement the calculate method.
           // def calculate(ops: String, a: Int, b: Int): Option[Int] = ???
-          def calculate(ops: String, a: Int, b: Int): Option[Int] = ???
+          def calculate(ops: String, a: Int, b: Int): Option[Int] = {
+            ops match {
+              case "sum" => Some(a+b)
+              case "subtraction" => Some(a-b)
+              case "multiplication" => Some(a*b)
+              case "division" => try {
+                Some(a/b)
+              } catch {
+                case _: Exception => None
+              }
+              case _ => None
+            }
+          }
 
           // C) Complete the challenge response variable.
           // val challengeResponse: Option[Calculation] = ???
-          val challengeResponse: Option[Calculation] = ???
+          val challengeResponse: Option[Calculation] = {
+            val a = params("a").asInt
+            val b = params("b").asInt
+            val operation = params("operation")
+
+            if(a == None || b == None) {
+              None
+            }
+            else {
+              val result = calculate(operation, a.get, b.get)
+
+              result match {
+                case None => None
+                case _ => Some(Calculation(operation, a.get, b.get, result.get))
+              }
+            }
+          }
 
           // <---- Your code ends  here. ---->
           challengeResponse match {
